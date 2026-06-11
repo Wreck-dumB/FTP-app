@@ -33,6 +33,7 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["families"]["Insert"]>;
+        Relationships: [];
       };
       family_members: {
         Row: {
@@ -54,6 +55,7 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["family_members"]["Insert"]>;
+        Relationships: [];
       };
       family_invites: {
         Row: {
@@ -79,6 +81,7 @@ export interface Database {
           expires_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["family_invites"]["Insert"]>;
+        Relationships: [];
       };
       children: {
         Row: {
@@ -100,6 +103,7 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["children"]["Insert"]>;
+        Relationships: [];
       };
       custody_schedules: {
         Row: {
@@ -123,6 +127,7 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["custody_schedules"]["Insert"]>;
+        Relationships: [];
       };
       custody_schedule_blocks: {
         Row: {
@@ -146,6 +151,7 @@ export interface Database {
           label?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["custody_schedule_blocks"]["Insert"]>;
+        Relationships: [];
       };
       swap_requests: {
         Row: {
@@ -177,6 +183,7 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["swap_requests"]["Insert"]>;
+        Relationships: [];
       };
       custody_overrides: {
         Row: {
@@ -202,6 +209,7 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["custody_overrides"]["Insert"]>;
+        Relationships: [];
       };
       notifications: {
         Row: {
@@ -229,6 +237,7 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["notifications"]["Insert"]>;
+        Relationships: [];
       };
       notes: {
         Row: {
@@ -256,8 +265,10 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["notes"]["Insert"]>;
+        Relationships: [];
       };
     };
+    Views: Record<string, never>;
     Functions: {
       is_family_member: {
         Args: { _family_id: string };
