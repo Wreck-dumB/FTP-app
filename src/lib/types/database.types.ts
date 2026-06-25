@@ -282,6 +282,15 @@ export interface Database {
         Args: { _token: string; _display_name: string; _color?: string };
         Returns: string;
       };
+      get_invite_preview: {
+        Args: { _token: string };
+        Returns: {
+          family_name: string;
+          invited_role: string;
+          status: string;
+          expires_at: string;
+        }[];
+      };
       accept_swap_request: {
         Args: { _request_id: string };
         Returns: undefined;
