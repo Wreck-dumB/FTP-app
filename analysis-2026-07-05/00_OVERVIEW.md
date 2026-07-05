@@ -1,0 +1,34 @@
+# 00 — Overview: State of the Operation
+
+**Analyst:** Claude (Fable 5) · 2026-07-05 · Scope: the FTP repo at `d:\Projects\First idea`, plus what its plan file, settings, and session memory reveal about the wider portfolio. Reports 01–08 in this folder carry the receipts.
+
+## The state of this operation, in ten sentences
+
+You are a solo, self-taught builder working in rare late-night/morning bursts around a day job, and the quality of what you produce in those bursts is genuinely above your experience level — the FTP schema, RLS architecture, and planning discipline would not embarrass a professional. FTP itself is 3 of 11 milestones done, builds clean, and then stalled: the last feature commit was June 26, and the plan file shows exactly where the energy went — three successively larger and more sophisticated plans for SparkPlay, a second business, written behind FTP's back without anyone ever writing "FTP is paused." Your portfolio is now six projects with zero shipped to a single external user, and the ratio is getting worse, not better. The most dangerous current fact is operational, not strategic: Milestone 3 has sat unpushed on one Windows machine for 23 days, the security audit is uncommitted, and the 968-line master plan for both businesses exists as one file with no backup anywhere. The second most dangerous fact: that audit found two critical RLS holes — in a custody app, any authenticated user can insert themselves into any family — the holes are live on your real (test-data) Supabase instance right now, and three days later zero of its seven prescribed steps have been executed. Your AI leverage is high at generation and near-zero at completion: you commission agent-executable work orders (the audit is literally formatted as a prompt for an implementing agent) and then never dispatch an agent at them. Your learning loop is the genuine bright spot — bugs become rules, patterns get promoted across projects, FTP's RLS mistakes visibly taught SparkPlay's far stricter security design — but the lessons live in `~/.claude` instead of in the repos, and they never get back-ported to the project that taught them. Nothing external breaks if you vanish for two weeks, which is the polite way of saying nothing you've built is load-bearing for anyone yet. The pattern underneath everything: features get finished, meta-work (pushing, README, status decisions, executing audits) gets silently dropped, and each project drifts into an unsafe half-state rather than being either advanced or parked. The operation doesn't need more skill or more ideas — it needs one explicit choice, one closed loop, and a ten-second `git push`.
+
+## Ranked top-10 highest-leverage changes
+
+1. **Push and commit everything, and back up the plans folder — today.** Evidence: `main` ahead of origin by 1 since 2026-06-26; `AUDIT_REPORT.md` untracked; plan file single-copy (07 §1). First step: `git add AUDIT_REPORT.md && git commit && git push`, then copy `~\.claude\plans\` somewhere synced.
+2. **Dispatch one Claude Code session to execute AUDIT_REPORT.md steps 1–6.** Evidence: audit written for agent execution 2026-07-02, 0/7 steps done (05). First step: open this repo, prompt: "Execute AUDIT_REPORT.md steps 1–6; present the M1 [DECISION] question when done."
+3. **Decide FTP vs SparkPlay as *the* business, in writing.** Evidence: plan-file stratigraphy — FTP is 12% of its own plan file; git cadence vs "business" label (04, 08). First step: write STATUS.md in this repo with the verdict, whichever it is.
+4. **Apply migration 0003 to the live Supabase project before any data or deploy.** Evidence: C1/C2 verified live at `0001_initial_schema.sql:355-361`; DB exists since 2026-06-11 (07 §2). First step: comes free with change #2.
+5. **Add CI (tsc + eslint + build on push).** Evidence: zero automated checks survive between work bursts; audit L4 pre-specced it (05, 07). First step: one 20-line GitHub Actions file.
+6. **Adopt end-of-session hygiene: never end ahead of origin.** Evidence: burst-work pattern + 23-day unpushed commit (05). First step: make it a rule; optionally a Claude Code Stop-hook that checks `git status`.
+7. **Institute STATUS.md / DECISIONS.md / real README in every project.** Evidence: all operational knowledge currently lives outside the repos; README still stock after 24 days (06, 03). First step: this repo first — audit L3 lists the README sections.
+8. **Ship one thing to one external human this month.** Evidence: 6 projects, 0 external users; nearest candidates are the ADHDan merch punch list or an FTP/SparkPlay skeleton deploy (04, 08). First step: pick the nearest one and put a date on it.
+9. **Fix or gate the NavBar's three 404 links.** Evidence: `/calendar`, `/requests`, `/notes` dead since 2026-06-12 (`NavBar.tsx:15-23`; audit L1). First step: included in change #2's step 5.
+10. **Stop starting projects; cap WIP.** Evidence: two projects added to memory *after* FTP stalled (04). First step: a written rule — no new repo until one existing project ships or is archived.
+
+## Three systemic patterns (each showed up in 3+ reports)
+
+1. **Generated-but-not-executed.** Plans, audits, and checklists get produced at high quality, then age without action: the audit (0/7 steps), TESTING.md (never created), the hello-world deploy (never evidenced), this pattern's next candidate is this very analysis. (Reports 02, 03, 05, 07.)
+2. **Silent drift instead of explicit decisions.** FTP was never paused, the NavBar links were never gated, the backup promise was never renegotiated — states change by neglect, never by verdict, so everything stalls in its most dangerous intermediate position. (Reports 03, 04, 07, 08.)
+3. **Knowledge compounds forward but never back-ports, and lives off-repo.** SparkPlay's plans prove FTP's lessons were learned; FTP itself stays broken, and every lesson lives in `~/.claude` on one machine instead of in git. (Reports 04, 06, 07.)
+
+## What this analysis could NOT see
+
+- **The five sibling projects' actual code** — SparkPlay (`D:\Projects\sparkplay`), the Pokémon tool, paper-trading bot, ADHDan merch, and streaming assets are outside this repo; every claim about them rests on the plan file, this repo's settings bleed, and session memory, not on reading them. SparkPlay in particular may change the portfolio picture substantially — it appears to be where the real momentum is.
+- **The live Supabase project's actual state** — whether migrations were applied as written, what data exists, whether the free-tier instance is paused.
+- **Anything in the owner's head or off this machine** — a Vercel account, domains, real-world SparkPlay trial results at the workplace, day-job constraints, and how deliberate the FTP→SparkPlay shift actually was.
+- **The remaining ~300 lines of the plan file** (SparkPlay staff-RBAC detail) were only skimmed structurally.
+- **`.env.local`** — deliberately not read (secrets).
