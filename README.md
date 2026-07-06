@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Forward Thinking Parents (FTP)
 
-## Getting Started
+A co-parenting coordination app for separated parents: shared custody calendar, schedule swap requests, notifications, and notes — so you don't have to message each other directly to coordinate schedule changes.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Next.js 16** (App Router, Turbopack) + TypeScript
+- **Supabase** (Postgres, Auth, Realtime)
+- **Tailwind CSS v4**
+- Hosted on **Vercel**
+
+## Prerequisites
+
+- Node.js 20 LTS
+- A free [Supabase](https://supabase.com) project
+- A free [Vercel](https://vercel.com) account (for deploy)
+
+## Environment variables
+
+Copy `.env.local.example` to `.env.local` and fill in:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=       # from Supabase → Project Settings → API
+NEXT_PUBLIC_SUPABASE_ANON_KEY=  # from Supabase → Project Settings → API
+NEXT_PUBLIC_SITE_URL=           # e.g. https://your-app.vercel.app (localhost:3000 in dev)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Database setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Apply migrations in order via the Supabase SQL editor (Dashboard → SQL Editor):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. `supabase/migrations/0001_initial_schema.sql`
+2. `supabase/migrations/0002_invite_preview.sql`
+3. `supabase/migrations/0003_security_hardening.sql`
 
-## Learn More
+## Local development
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Build
 
-## Deploy on Vercel
+```bash
+npm run build
+npx tsc --noEmit   # type check
+npm run lint
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Current status
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Milestone 3 of 11 complete: auth, family setup, and invite flow. Working toward the custody calendar and swap requests.
+
+| Milestone | Status |
+|-----------|--------|
+| Auth (signup / login / logout) | ✅ Done |
+| Family setup + membership | ✅ Done |
+| Invite flow (email link) | ✅ Done |
+| Child profiles | 🔲 Planned |
+| Custody schedule engine | 🔲 Planned |
+| Calendar view | 🔲 Planned |
+| Swap requests | 🔲 Planned |
+| Notifications | 🔲 Planned |
+| Notes / reminders | 🔲 Planned |
+| Dashboard polish | 🔲 Planned |
+| Deploy + real-world test | 🔲 Planned |
+
+## Two-account testing
+
+Use Gmail `+` aliases (e.g. `you+parentA@gmail.com` / `you+parentB@gmail.com`) in two browser profiles to simulate both co-parents.
+
+## Security
+
+See `AUDIT_REPORT.md` for the full security review (2026-07-02). Critical and high findings are resolved in migration `0003_security_hardening.sql`.

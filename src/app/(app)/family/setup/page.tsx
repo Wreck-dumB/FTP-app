@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentFamilyMember } from "@/lib/supabase/family";
 import { createFamily } from "@/app/(app)/family/actions";
+import { errorMessage } from "@/lib/utils/errors";
 
 export default async function FamilySetupPage({
   searchParams,
@@ -8,6 +9,7 @@ export default async function FamilySetupPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
+  const errorText = errorMessage(error);
 
   const member = await getCurrentFamilyMember();
   if (member) {
@@ -22,8 +24,8 @@ export default async function FamilySetupPage({
         set up.
       </p>
 
-      {error && (
-        <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+      {errorText && (
+        <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{errorText}</p>
       )}
 
       <form action={createFamily} className="mt-6 space-y-4">

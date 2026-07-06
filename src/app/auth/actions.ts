@@ -2,18 +2,21 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { safeNext } from "@/lib/utils/redirects";
+import { toAuthErrorCode } from "@/lib/utils/errors";
+import { getSiteUrl } from "@/lib/env";
 
 export async function login(formData: FormData) {
   const supabase = await createClient();
 
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const next = (formData.get("next") as string) || "/dashboard";
+  const next = safeNext(formData.get("next"));
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    redirect(`/login?error=${encodeURIComponent(error.message)}&next=${encodeURIComponent(next)}`);
+    redirect(`/login?error=${toAuthErrorCode(error)}&next=${encodeURIComponent(next)}`);
   }
 
   redirect(next);
@@ -24,24 +27,21 @@ export async function signup(formData: FormData) {
 
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const next = (formData.get("next") as string) || "/dashboard";
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const next = safeNext(formData.get("next"));
 
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent(next)}`,
+      emailRedirectTo: `${getSiteUrl()}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });
 
   if (error) {
-    redirect(`/signup?error=${encodeURIComponent(error.message)}&next=${encodeURIComponent(next)}`);
+    redirect(`/signup?error=${toAuthErrorCode(error)}&next=${encodeURIComponent(next)}`);
   }
 
-  redirect(
-    `/signup?message=${encodeURIComponent("Check your email to confirm your account, then log in.")}`,
-  );
+  redirect("/signup?message=check_email");
 }
 
 export async function logout() {

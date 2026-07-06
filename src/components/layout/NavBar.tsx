@@ -12,15 +12,9 @@ export default function NavBar({ email }: { email: string }) {
           <Link href="/dashboard" className="hover:text-gray-900">
             Dashboard
           </Link>
-          <Link href="/calendar" className="hover:text-gray-900">
-            Calendar
-          </Link>
-          <Link href="/requests" className="hover:text-gray-900">
-            Requests
-          </Link>
-          <Link href="/notes" className="hover:text-gray-900">
-            Notes
-          </Link>
+          <span className="text-gray-300" title="Coming soon">Calendar</span>
+          <span className="text-gray-300" title="Coming soon">Requests</span>
+          <span className="text-gray-300" title="Coming soon">Notes</span>
           <Link href="/family" className="hover:text-gray-900">
             Family
           </Link>

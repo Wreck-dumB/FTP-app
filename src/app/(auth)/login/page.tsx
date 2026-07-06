@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { login } from "@/app/auth/actions";
+import { errorMessage } from "@/lib/utils/errors";
 
 export default async function LoginPage({
   searchParams,
@@ -7,6 +8,7 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string; next?: string }>;
 }) {
   const { error, next } = await searchParams;
+  const errorText = errorMessage(error);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
@@ -16,8 +18,8 @@ export default async function LoginPage({
           <p className="mt-1 text-sm text-gray-500">Log in to your family</p>
         </div>
 
-        {error && (
-          <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+        {errorText && (
+          <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{errorText}</p>
         )}
 
         <form action={login} className="space-y-4">

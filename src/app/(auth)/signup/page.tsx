@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { signup } from "@/app/auth/actions";
+import { errorMessage, infoMessage } from "@/lib/utils/errors";
 
 export default async function SignupPage({
   searchParams,
@@ -7,6 +8,8 @@ export default async function SignupPage({
   searchParams: Promise<{ error?: string; message?: string; next?: string }>;
 }) {
   const { error, message, next } = await searchParams;
+  const errorText = errorMessage(error);
+  const messageText = infoMessage(message);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
@@ -16,11 +19,11 @@ export default async function SignupPage({
           <p className="mt-1 text-sm text-gray-500">Create your account</p>
         </div>
 
-        {error && (
-          <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+        {errorText && (
+          <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{errorText}</p>
         )}
-        {message && (
-          <p className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">{message}</p>
+        {messageText && (
+          <p className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">{messageText}</p>
         )}
 
         <form action={signup} className="space-y-4">

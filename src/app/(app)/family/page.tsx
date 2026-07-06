@@ -6,6 +6,8 @@ import {
   getPendingInvites,
 } from "@/lib/supabase/family";
 import { createInvite, revokeInvite } from "@/app/(app)/family/actions";
+import { errorMessage } from "@/lib/utils/errors";
+import { getSiteUrl } from "@/lib/env";
 
 const ROLE_LABELS: Record<string, string> = {
   parent: "Parent",
@@ -19,6 +21,7 @@ export default async function FamilyPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
+  const errorText = errorMessage(error);
   const member = await getCurrentFamilyMember();
   if (!member) {
     redirect("/family/setup");
@@ -30,7 +33,7 @@ export default async function FamilyPage({
     getPendingInvites(member.family_id),
   ]);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const siteUrl = getSiteUrl();
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -39,8 +42,8 @@ export default async function FamilyPage({
         Family members can see the shared calendar, requests, and notes.
       </p>
 
-      {error && (
-        <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+      {errorText && (
+        <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{errorText}</p>
       )}
 
       <div className="mt-6 rounded-lg border border-gray-200 bg-white">

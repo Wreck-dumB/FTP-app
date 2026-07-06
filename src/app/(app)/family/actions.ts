@@ -4,16 +4,25 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentFamilyMember } from "@/lib/supabase/family";
+import { toErrorCode } from "@/lib/utils/errors";
+import { sanitizeColor, cleanText } from "@/lib/utils/inputs";
 
 export async function createFamily(formData: FormData) {
   const supabase = await createClient();
 
-  const name = (formData.get("name") as string)?.trim();
-  const displayName = (formData.get("display_name") as string)?.trim();
-  const color = (formData.get("color") as string) || "#3b82f6";
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect("/login");
+  }
+
+  const name = cleanText(formData.get("name"));
+  const displayName = cleanText(formData.get("display_name"));
+  const color = sanitizeColor(formData.get("color"));
 
   if (!name || !displayName) {
-    redirect("/family/setup?error=Please fill in both fields");
+    redirect("/family/setup?error=missing_fields");
   }
 
   const { error } = await supabase.rpc("create_family_with_owner", {
@@ -23,7 +32,7 @@ export async function createFamily(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/family/setup?error=${encodeURIComponent(error.message)}`);
+    redirect(`/family/setup?error=${toErrorCode(error)}`);
   }
 
   redirect("/family");
@@ -37,11 +46,11 @@ export async function createInvite(formData: FormData) {
     redirect("/family/setup");
   }
 
-  const email = (formData.get("email") as string)?.trim().toLowerCase();
+  const email = cleanText(formData.get("email"), 320).toLowerCase();
   const role = formData.get("role") as string;
 
   if (!email || (role !== "co_parent" && role !== "guardian")) {
-    redirect("/family?error=Please enter an email and choose a role");
+    redirect("/family?error=invalid_input");
   }
 
   const {
@@ -59,7 +68,7 @@ export async function createInvite(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/family?error=${encodeURIComponent(error.message)}`);
+    redirect(`/family?error=${toErrorCode(error)}`);
   }
 
   revalidatePath("/family");
@@ -68,6 +77,14 @@ export async function createInvite(formData: FormData) {
 
 export async function revokeInvite(formData: FormData) {
   const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect("/login");
+  }
+
   const id = formData.get("id") as string;
 
   // RLS scopes this to invites for the caller's own family — a foreign

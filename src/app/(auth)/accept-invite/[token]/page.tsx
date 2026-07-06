@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { acceptInvite } from "./actions";
+import { errorMessage } from "@/lib/utils/errors";
 
 const ROLE_LABELS: Record<string, string> = {
   parent: "Parent",
@@ -17,6 +18,7 @@ export default async function AcceptInvitePage({
 }) {
   const { token } = await params;
   const { error } = await searchParams;
+  const errorText = errorMessage(error);
 
   const supabase = await createClient();
 
@@ -100,8 +102,8 @@ export default async function AcceptInvitePage({
         {ROLE_LABELS[preview.invited_role] ?? preview.invited_role}.
       </p>
 
-      {error && (
-        <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+      {errorText && (
+        <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{errorText}</p>
       )}
 
       <form action={acceptInvite} className="mt-4 space-y-4">
