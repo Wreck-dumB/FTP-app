@@ -6,11 +6,24 @@ Preconditions
 - A Supabase project with service role key (sensitive). Do not expose this key publicly.
 - Copy `.env.local.example` → `.env.local` and set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
 
-Seed demo data
+Seed demo data (two options)
+
+1) Run locally with service role key (recommended for safety):
 
 ```bash
 npm ci
 npm run seed:demo
+```
+
+2) Server-side seed endpoint (safer for collaborators):
+
+- Add `SEED_SECRET` and `SUPABASE_SERVICE_ROLE_KEY` to your Vercel (or server) envs.
+- POST to `/api/seed` with header `x-seed-secret: <SEED_SECRET>` to create minimal demo data.
+
+Example (curl):
+
+```bash
+curl -X POST -H "x-seed-secret: $SEED_SECRET" https://your-deploy-url.vercel.app/api/seed
 ```
 
 What the script creates
