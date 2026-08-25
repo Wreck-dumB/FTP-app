@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useRef, useState } from 'react';
 
 type Day = {
@@ -99,7 +101,9 @@ export default function Calendar({ year, month }: { year: number; month: number 
                   >
                     {c.inMonth ? (
                       <button
-                        ref={(el) => (buttonRefs.current[idx] = el)}
+                        ref={(el) => {
+                          buttonRefs.current[idx] = el;
+                        }}
                         className="w-full text-left text-sm"
                         aria-label={`Select ${c.date}`}
                         tabIndex={focusedIndex === null && idx === 0 ? 0 : focusedIndex === idx ? 0 : -1}
